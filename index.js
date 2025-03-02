@@ -29,6 +29,7 @@ let defaultSettings = {
     ],
     useContinuation: true,
     useRegenerate: false,
+    useImpersonation: false,
     repeats: 2, // 0 = infinite
     sendAs: 'user',
     randomTime: false,
@@ -64,6 +65,7 @@ function populateUIWithSettings() {
     $('#idle_prompts').val(extension_settings.idle.prompts.join('\n')).trigger('input');
     $('#idle_use_continuation').prop('checked', extension_settings.idle.useContinuation).trigger('input');
     $('#idle_use_regenerate').prop('checked', extension_settings.idle.useRegenerate).trigger('input');
+    $('#idle_use_impersonation').prop('checked', extension_settings.idle.useImpersonation).trigger('input');
     $('#idle_enabled').prop('checked', extension_settings.idle.enabled).trigger('input');
     $('#idle_repeats').val(extension_settings.idle.repeats).trigger('input');
     $('#idle_sendAs').val(extension_settings.idle.sendAs).trigger('input');
@@ -160,6 +162,9 @@ function sendPrompt(prompt) {
     } else if (extension_settings.idle.useContinuation) {
         $('#option_continue').trigger('click');
         console.debug('Sending idle prompt with continuation');
+    } else if (extension_settings.idle.useImpersonation) {
+        $('#option_impersonate').trigger('click');
+        console.debug('Sending idle prompt with impersonation');
     } else {
         console.debug('Sending idle prompt');
         console.log(extension_settings.idle);
@@ -237,6 +242,7 @@ function setupListeners() {
         ['idle_prompts', 'prompts'],
         ['idle_use_continuation', 'useContinuation', true],
         ['idle_use_regenerate', 'useRegenerate', true],
+        ['idle_use_impersonation', 'useImpersonation', true],
         ['idle_enabled', 'enabled', true],
         ['idle_repeats', 'repeats'],
         ['idle_sendAs', 'sendAs'],
