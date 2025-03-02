@@ -262,6 +262,32 @@ function setupListeners() {
         attachIdleListeners();
     }
 
+    // Make continuation, regenerate, and impersonation mutually exclusive
+    $('#idle_use_continuation, #idle_use_regenerate, #idle_use_impersonation').on('change', function() {
+        const checkboxId = $(this).attr('id');
+
+        if ($(this).prop('checked')) {
+            // Uncheck the other two options
+            if (checkboxId !== 'idle_use_continuation') {
+                $('#idle_use_continuation').prop('checked', false);
+                extension_settings.idle.useContinuation = false;
+            }
+
+            if (checkboxId !== 'idle_use_regenerate') {
+                $('#idle_use_regenerate').prop('checked', false);
+                extension_settings.idle.useRegenerate = false;
+            }
+
+            if (checkboxId !== 'idle_use_impersonation') {
+                $('#idle_use_impersonation').prop('checked', false);
+                extension_settings.idle.useImpersonation = false;
+            }
+
+            // Save the changes
+            saveSettingsDebounced();
+        }
+    });
+
     //show/hide timer min parent div
     $('#idle_random_time').on('input', function () {
         if ($(this).prop('checked')) {

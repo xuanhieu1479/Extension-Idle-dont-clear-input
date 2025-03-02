@@ -31,12 +31,15 @@
         <label for="idle_use_continuation">Use Continuation</label>
       </div>
       <div class="idle_block flex-container">
-	<input type="checkbox" id="idle_use_regenerate">
+	<input type="checkbox" id="idle_use_regenerate" title="Indicates whether the idle action will use the 'Regenerate' function.">
 	<label for="idle_use_regenerate">Use Regenerate</label>
       </div>
       <div class="idle_block flex-container">
         <input id="idle_use_impersonation" type="checkbox" title="Indicates whether the idle action will use the 'Impersonate' function." />
         <label for="idle_use_impersonation">Use Impersonation</label>
+      </div>
+      <div class="idle_block" style="font-size: 0.8em; font-style: italic; text-align: center; margin-top: -5px; margin-bottom: 5px;">
+        (Continuation, Regenerate, and Impersonation are mutually exclusive)
       </div>
       <div class="idle_block flex-container">
         <input id="idle_random_time" type="checkbox" title="Indicates if the idle time should be randomized between a min/max value." />
