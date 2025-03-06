@@ -30,6 +30,7 @@ let defaultSettings = {
     useContinuation: true,
     useRegenerate: false,
     useImpersonation: false,
+    useSwipe: false,
     repeats: 2, // 0 = infinite
     sendAs: 'user',
     randomTime: false,
@@ -66,6 +67,7 @@ function populateUIWithSettings() {
     $('#idle_use_continuation').prop('checked', extension_settings.idle.useContinuation).trigger('input');
     $('#idle_use_regenerate').prop('checked', extension_settings.idle.useRegenerate).trigger('input');
     $('#idle_use_impersonation').prop('checked', extension_settings.idle.useImpersonation).trigger('input');
+    $('#idle_use_swipe').prop('checked', extension_settings.idle.useSwipe).trigger('input');
     $('#idle_enabled').prop('checked', extension_settings.idle.enabled).trigger('input');
     $('#idle_repeats').val(extension_settings.idle.repeats).trigger('input');
     $('#idle_sendAs').val(extension_settings.idle.sendAs).trigger('input');
@@ -161,10 +163,13 @@ function sendPrompt(prompt) {
         console.debug('Sending idle regenerate');
     } else if (extension_settings.idle.useContinuation) {
         $('#option_continue').trigger('click');
-        console.debug('Sending idle prompt with continuation');
+        console.debug('Sending idle continuation');
     } else if (extension_settings.idle.useImpersonation) {
         $('#option_impersonate').trigger('click');
-        console.debug('Sending idle prompt with impersonation');
+        console.debug('Sending idle impersonation');
+    } else if (extension_settings.idle.useSwipe) {
+        $('.swipe_right').click();
+        console.debug('Sending idle swipe');
     } else {
         console.debug('Sending idle prompt');
         console.log(extension_settings.idle);
@@ -243,6 +248,7 @@ function setupListeners() {
         ['idle_use_continuation', 'useContinuation', true],
         ['idle_use_regenerate', 'useRegenerate', true],
         ['idle_use_impersonation', 'useImpersonation', true],
+        ['idle_use_swipe', 'useSwipe', true],
         ['idle_enabled', 'enabled', true],
         ['idle_repeats', 'repeats'],
         ['idle_sendAs', 'sendAs'],
@@ -262,12 +268,12 @@ function setupListeners() {
         attachIdleListeners();
     }
 
-    // Make continuation, regenerate, and impersonation mutually exclusive
-    $('#idle_use_continuation, #idle_use_regenerate, #idle_use_impersonation').on('change', function() {
+    // Make continuation, regenerate, impersonation, and swipe mutually exclusive
+    $('#idle_use_continuation, #idle_use_regenerate, #idle_use_impersonation, #idle_use_swipe').on('change', function() {
         const checkboxId = $(this).attr('id');
 
         if ($(this).prop('checked')) {
-            // Uncheck the other two options
+            // Uncheck the other options
             if (checkboxId !== 'idle_use_continuation') {
                 $('#idle_use_continuation').prop('checked', false);
                 extension_settings.idle.useContinuation = false;
@@ -281,6 +287,11 @@ function setupListeners() {
             if (checkboxId !== 'idle_use_impersonation') {
                 $('#idle_use_impersonation').prop('checked', false);
                 extension_settings.idle.useImpersonation = false;
+            }
+
+            if (checkboxId !== 'idle_use_swipe') {
+                $('#idle_use_swipe').prop('checked', false);
+                extension_settings.idle.useSwipe = false;
             }
 
             // Save the changes
