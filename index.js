@@ -168,7 +168,7 @@ function sendPrompt(prompt) {
         $('#option_impersonate').trigger('click');
         console.debug('Sending idle impersonation');
     } else if (extension_settings.idle.useSwipe) {
-        $('.swipe_right').click();
+        $('.last_mes .swipe_right').click();
         console.debug('Sending idle swipe');
     } else {
         console.debug('Sending idle prompt');
