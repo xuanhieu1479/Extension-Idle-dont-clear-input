@@ -139,15 +139,14 @@ function sendLoud(sendAs, prompt) {
 
         $('#send_textarea').val(prompt);
 
-        // Set the focus back to the textarea
-        $('#send_textarea').focus();
-
         $('#send_but').trigger('click');
 
         // Return the saved message after idle prompt is sent
         setTimeout(() => {
             // Re-enable message input.
-             $('#send_textarea').prop('disabled', false);
+            $('#send_textarea').prop('disabled', false);
+            // Set the focus back to the textarea
+            $('#send_textarea').focus();
             // Wait a little bit before restoring the old text
             // otherwise the old text will be sent instead of the idle prompt.
             $('#send_textarea').val(currentMessage);
@@ -238,17 +237,25 @@ function attachUpdateListener(elementId, property, isCheckbox = false) {
 }
 
 /**
+ * Reset everything after a messagge is sent.
+ */
+function resetAll() {
+    resetIdleTimer();
+    repeatCount = 0;
+}
+
+/**
  * Handle the enabling or disabling of the idle extension.
  * Adds or removes the idle listeners based on the checkbox's state.
  */
 function handleIdleEnabled() {
     if (!extension_settings.idle.enabled) {
         clearTimeout(idleTimer);
-        $('#send_but').off('click', resetIdleTimer);
+        $('#send_but').off('click', resetAll);
     } else {
         resetIdleTimer();
-        // Reset the timer every time a new message is sent.
-        $('#send_but').on('click', resetIdleTimer);
+        // Reset the timer and repeat count every time a new message is sent.
+        $('#send_but').on('click', resetAll);
     }
 }
 
