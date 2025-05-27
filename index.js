@@ -253,11 +253,11 @@ function resetAll() {
 function handleIdleEnabled() {
     if (!extension_settings.idle.enabled) {
         clearTimeout(idleTimer);
-        eventSource.removeListener(event_types.GENERATION_ENDED, resetAll);
+        eventSource.removeListener(event_types.GENERATION_STARTED, resetAll);
     } else {
         resetIdleTimer();
         // Reset the timer and repeat count every time a new message is sent.
-        eventSource.on(event_types.GENERATION_ENDED, resetAll);
+        eventSource.on(event_types.GENERATION_STARTED, resetAll);
     }
 }
 
