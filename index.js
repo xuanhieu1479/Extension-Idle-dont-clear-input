@@ -141,15 +141,16 @@ function sendLoud(sendAs, prompt) {
 
         $('#send_but').trigger('click');
 
+        // Temporarily disable the message input to prevent users from typing more, ruining the idle prompt.
+        $('#send_textarea').prop('disabled', true);
+
         // Return the saved message after idle prompt is sent
         setTimeout(() => {
+            // Re-enable message input.
+             $('#send_textarea').prop('disabled', false);
             // Wait a little bit before restoring the old text
             // otherwise the old text will be sent instead of the idle prompt.
-
-            // Capture any new text the user may have started typing while the idle prompt was being sent.
-            // Merge it with the original message to preserve user input smoothly.
-            const trailingMessage = $('#send_textarea').val();
-            $('#send_textarea').val(`${currentMessage}${trailingMessage}`);
+            $('#send_textarea').val(currentMessage);
         }, 1000);
     } else if (sendAs === 'char') {
         sendMessageAs('', `${getContext().name2}\n${prompt}`);
@@ -336,17 +337,6 @@ function setupListeners() {
     });
 
 }
-
-const debouncedActivityHandler = debounce((event) => {
-    // Check if the event target (or any of its parents) has the id "option_continue"
-    if ($(event.target).closest('#option_continue').length) {
-        return; // Do not proceed if the click was on (or inside) an element with id "option_continue"
-    }
-
-    console.debug('Activity detected, resetting idle timer');
-    resetIdleTimer();
-    repeatCount = 0;
-}, 250);
 
 function toggleIdle() {
     extension_settings.idle.enabled = !extension_settings.idle.enabled;
