@@ -142,7 +142,11 @@ function sendLoud(sendAs, prompt) {
         $('#send_but').trigger('click');
 
         // Return the saved message after idle prompt is sent
-        $('#send_textarea').val(currentMessage);
+        setTimeout(() => {
+            // Wait a little bit before restoring the old text
+            // otherwise the old text will be sent instead of the idle prompt.
+            $('#send_textarea').val(currentMessage);
+        }, 1000);
     } else if (sendAs === 'char') {
         sendMessageAs('', `${getContext().name2}\n${prompt}`);
         promptQuietForLoudResponse(sendAs, '');
