@@ -1,7 +1,8 @@
 import {
     saveSettingsDebounced,
     substituteParams,
-    callBackAfterSendGenerationRequestSuccess,
+    event_types,
+    eventSource,
 } from '../../../../script.js';
 import { debounce } from '../../../utils.js';
 import { promptQuietForLoudResponse, sendMessageAs, sendNarratorMessage } from '../../../slash-commands.js';
@@ -243,7 +244,7 @@ function attachUpdateListener(elementId, property, isCheckbox = false) {
 function resetAll() {
     resetIdleTimer();
     repeatCount = 0;
-    console.debug('Does this even run?');
+    console.debug('Does this even run?', 12345);
 }
 
 /**
@@ -253,11 +254,11 @@ function resetAll() {
 function handleIdleEnabled() {
     if (!extension_settings.idle.enabled) {
         clearTimeout(idleTimer);
-        callBackAfterSendGenerationRequestSuccess = null;
+        eventSource.removeListener(event_types.GENERATION_ENDED, resetAll);
     } else {
         resetIdleTimer();
         // Reset the timer and repeat count every time a new message is sent.
-        callBackAfterSendGenerationRequestSuccess = resetAll;
+        eventSource.on(event_types.GENERATION_ENDED, resetAll);
     }
 }
 
