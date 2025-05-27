@@ -243,10 +243,8 @@ function attachUpdateListener(elementId, property, isCheckbox = false) {
 function handleIdleEnabled() {
     if (!extension_settings.idle.enabled) {
         clearTimeout(idleTimer);
-        removeIdleListeners();
     } else {
         resetIdleTimer();
-        attachIdleListeners();
     }
 }
 
@@ -275,11 +273,6 @@ function setupListeners() {
 
     // Idleness listeners, could be made better
     $('#idle_enabled').on('input', debounce(handleIdleEnabled, 250));
-
-    // Add the idle listeners initially if the idle feature is enabled
-    if (extension_settings.idle.enabled) {
-        attachIdleListeners();
-    }
 
     // Make continuation, regenerate, impersonation, and swipe mutually exclusive
     $('#idle_use_continuation, #idle_use_regenerate, #idle_use_impersonation, #idle_use_swipe').on('change', function() {
@@ -354,19 +347,6 @@ const debouncedActivityHandler = debounce((event) => {
     resetIdleTimer();
     repeatCount = 0;
 }, 250);
-
-function attachIdleListeners() {
-    $(document).on('click keypress', debouncedActivityHandler);
-    document.addEventListener('keydown', debouncedActivityHandler);
-}
-
-/**
- * Remove idle-specific listeners.
- */
-function removeIdleListeners() {
-    $(document).off('click keypress', debouncedActivityHandler);
-    document.removeEventListener('keydown', debouncedActivityHandler);
-}
 
 function toggleIdle() {
     extension_settings.idle.enabled = !extension_settings.idle.enabled;

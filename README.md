@@ -1,7 +1,7 @@
 # Extension-Idle
 
-Adds "idle prompting" after the user has been idle for some time to organically continue the conversation.
+Automatically send a specific prompt after a set amount of time.
+
+This is a fork from.[SillyTavern Extension Idle](https://github.com/SillyTavern/Extension-Idle).
 
 Idea and implementation by [city-unit](https://github.com/city-unit).
-
-This custom tweak retains the typed input in the send field after the idle prompt is triggered.
