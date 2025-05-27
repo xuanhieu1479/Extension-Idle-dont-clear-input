@@ -145,7 +145,11 @@ function sendLoud(sendAs, prompt) {
         setTimeout(() => {
             // Wait a little bit before restoring the old text
             // otherwise the old text will be sent instead of the idle prompt.
-            $('#send_textarea').val(currentMessage);
+
+            // Capture any new text the user may have started typing while the idle prompt was being sent.
+            // Merge it with the original message to preserve user input smoothly.
+            const trailingMessage = $('#send_textarea').val();
+            $('#send_textarea').val(`${currentMessage}${trailingMessage}`);
         }, 1000);
     } else if (sendAs === 'char') {
         sendMessageAs('', `${getContext().name2}\n${prompt}`);
