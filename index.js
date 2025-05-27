@@ -131,6 +131,9 @@ async function sendIdlePrompt() {
 function sendLoud(sendAs, prompt) {
     if (sendAs === 'user') {
         prompt = substituteParams(prompt);
+        // Temporarily disable the message input to prevent users from typing more, ruining the idle prompt.
+        $('#send_textarea').prop('disabled', true);
+
         // Save the typed message
         const currentMessage = $('#send_textarea').val();
 
@@ -140,9 +143,6 @@ function sendLoud(sendAs, prompt) {
         $('#send_textarea').focus();
 
         $('#send_but').trigger('click');
-
-        // Temporarily disable the message input to prevent users from typing more, ruining the idle prompt.
-        $('#send_textarea').prop('disabled', true);
 
         // Return the saved message after idle prompt is sent
         setTimeout(() => {
@@ -244,8 +244,11 @@ function attachUpdateListener(elementId, property, isCheckbox = false) {
 function handleIdleEnabled() {
     if (!extension_settings.idle.enabled) {
         clearTimeout(idleTimer);
+        $('#send_but').off('click', resetIdleTimer);
     } else {
         resetIdleTimer();
+        // Reset the timer every time a new message is sent.
+        $('#send_but').on('click', resetIdleTimer);
     }
 }
 
