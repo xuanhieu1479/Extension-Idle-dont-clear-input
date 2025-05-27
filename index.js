@@ -131,6 +131,8 @@ async function sendIdlePrompt() {
 function sendLoud(sendAs, prompt) {
     if (sendAs === 'user') {
         prompt = substituteParams(prompt);
+        // Save the typed message
+        const currentMessage = $('#send_textarea').val();
 
         $('#send_textarea').val(prompt);
 
@@ -138,6 +140,9 @@ function sendLoud(sendAs, prompt) {
         $('#send_textarea').focus();
 
         $('#send_but').trigger('click');
+
+        // Return the saved message after idle prompt is sent
+        $('#send_textarea').val(currentMessage);
     } else if (sendAs === 'char') {
         sendMessageAs('', `${getContext().name2}\n${prompt}`);
         promptQuietForLoudResponse(sendAs, '');
