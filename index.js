@@ -244,7 +244,6 @@ function attachUpdateListener(elementId, property, isCheckbox = false) {
 function resetAll() {
     resetIdleTimer();
     repeatCount = 0;
-    console.debug('Does this even run?', 12345);
 }
 
 /**
