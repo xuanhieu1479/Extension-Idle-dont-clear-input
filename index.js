@@ -13,6 +13,7 @@ const extensionName = 'third-party/Extension-Idle-dont-clear-input';
 
 let idleTimer = null;
 let repeatCount = 0;
+let totalIdleCount = 0;
 
 let defaultSettings = {
     enabled: false,
@@ -38,6 +39,7 @@ let defaultSettings = {
     randomTime: false,
     timeMin: 60,
     includePrompt: false,
+    idleLimit: 0, // 0 = infinite
 };
 
 
@@ -76,6 +78,7 @@ function populateUIWithSettings() {
     $('#idle_random_time').prop('checked', extension_settings.idle.randomTime).trigger('input');
     $('#idle_timer_min').val(extension_settings.idle.timerMin).trigger('input');
     $('#idle_include_prompt').prop('checked', extension_settings.idle.includePrompt).trigger('input');
+    $('#idle_limit').val(extension_settings.idle.idleLimit).trigger('input');
 }
 
 
@@ -108,6 +111,12 @@ function resetIdleTimer() {
 async function sendIdlePrompt() {
     if (!extension_settings.idle.enabled) return;
 
+    // Check total idle limit (0 = infinite)
+    if (extension_settings.idle.idleLimit > 0 && totalIdleCount >= extension_settings.idle.idleLimit) {
+        console.debug("Not sending idle prompt due to total idle limit reached.");
+        return;
+    }
+
     // Check repeat conditions and waiting for a response
     if (repeatCount >= extension_settings.idle.repeats || $('#mes_stop').is(':visible')) {
         //console.debug("Not sending idle prompt due to repeat conditions or waiting for a response.");
@@ -121,6 +130,7 @@ async function sendIdlePrompt() {
 
     sendPrompt(randomPrompt);
     repeatCount++;
+    totalIdleCount++;
     resetIdleTimer();
 }
 
@@ -244,6 +254,7 @@ function attachUpdateListener(elementId, property, isCheckbox = false) {
 function resetAll() {
     resetIdleTimer();
     repeatCount = 0;
+    totalIdleCount = 0;
 }
 
 /**
@@ -279,6 +290,7 @@ function setupListeners() {
         ['idle_random_time', 'randomTime', true],
         ['idle_timer_min', 'timerMin'],
         ['idle_include_prompt', 'includePrompt', true],
+        ['idle_limit', 'idleLimit'],
     ];
     settingsToWatch.forEach(setting => {
         attachUpdateListener(...setting);
