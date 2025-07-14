@@ -14,6 +14,7 @@ const extensionName = 'third-party/Extension-Idle-dont-clear-input';
 let idleTimer = null;
 let repeatCount = 0;
 let totalIdleCount = 0;
+let preventIdleCountReset = false; // Flag to prevent totalIdleCount reset for 5 seconds after sendLoud
 
 let defaultSettings = {
     enabled: false,
@@ -141,6 +142,12 @@ async function sendIdlePrompt() {
  * @param {string} prompt - The prompt text to send to the AI.
  */
 function sendLoud(sendAs, prompt) {
+    // Set flag to prevent totalIdleCount reset for 5 seconds
+    preventIdleCountReset = true;
+    setTimeout(() => {
+        preventIdleCountReset = false;
+    }, 10000);
+
     if (sendAs === 'user') {
         prompt = substituteParams(prompt);
         // Temporarily disable the message input to prevent users from typing more, ruining the idle prompt.
@@ -254,7 +261,10 @@ function attachUpdateListener(elementId, property, isCheckbox = false) {
 function resetAll() {
     resetIdleTimer();
     repeatCount = 0;
-    totalIdleCount = 0;
+    // Only reset totalIdleCount if the flag is not set (preventing reset for 5 seconds after sendLoud)
+    if (!preventIdleCountReset) {
+        totalIdleCount = 0;
+    }
 }
 
 /**
