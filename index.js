@@ -90,7 +90,7 @@ function resetIdleTimer() {
     console.debug('Resetting idle timer');
     if (idleTimer) clearTimeout(idleTimer);
     let context = getContext();
-    if (!context.characterId && !context.groupID) return;
+    if (!context.characterId && !context.groupId) return;
     if (!extension_settings.idle.enabled) return;
     if (extension_settings.idle.randomTime) {
         // ensure these are ints
@@ -146,7 +146,7 @@ function sendLoud(sendAs, prompt) {
     preventIdleCountReset = true;
     setTimeout(() => {
         preventIdleCountReset = false;
-    }, 10000);
+    }, 5000);
 
     if (sendAs === 'user') {
         prompt = substituteParams(prompt);
